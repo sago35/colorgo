@@ -110,7 +110,7 @@ OTHER:
 	app.Action = func(c *cli.Context) {
 		rules := []ColorRule{}
 		if len(c.Args()) > 0 {
-			for i := 0; i < len(c.Args()); i += 2 {
+			for i := 0; i + 1 < len(c.Args()); i += 2 {
 				rules = append(rules, makeColorRule(c.Args()[i], c.Args()[i+1]))
 			}
 		}
