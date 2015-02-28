@@ -59,19 +59,19 @@ func makeColorRule(regexStr, color string) (ColorRule, error) {
 func main() {
 	app := cli.NewApp()
 	app.Name = "gocolor.go"
-	app.Usage = "文字コードを変換しつつ、正規表現で色づけを行う"
-	app.Version = "0.0.1"
+	app.Usage = "colorize stdout by regular expressions"
+	app.Version = "0.0.2"
 	app.Author = "sago35"
 	app.Email = "sago35@gmail.com"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "input, i",
-			Usage: "入力文字コード",
+			Usage: "input encoding",
 			Value: "utf8",
 		},
 		cli.StringFlag{
 			Name:  "output, o",
-			Usage: "出力文字コード",
+			Usage: "output encoding",
 			Value: "utf8",
 		},
 	}
@@ -93,13 +93,15 @@ OPTIONS:
     {{end}}
 
 OTHER:
-    入出力文字コードは、デフォルト値は入力はutf8、出力はutf8となっています
-    以下を設定可能です
+    Default encoding is utf8 for input and output.
+    Supported encodings are below.
 
         cp932 shijtjis eucjp utf8
+        and encodings supported by mahonia
 
-    REGEXは、色づけを行う正規表現
-    COLORは、以下の色の名前を指定可能です
+    REGEX : Regular expression
+
+    COLOR : Color name
 
         None
         Black
