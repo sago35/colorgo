@@ -14,19 +14,21 @@ USAGE:
     gocolor.go [OPTIONS] [ REGEX  COLOR ]*
 
 OPTIONS:
-    --input, -i "utf8"  入力文字コード
-    --output, -o "utf8" 出力文字コード
+    --input, -i "utf8"  input encoding
+    --output, -o "utf8" output encoding
     --help, -h          show help
     --version, -v       print the version
 
 OTHER:
-    入出力文字コードは、デフォルト値は入力はutf8、出力はutf8となっています
-    以下を設定可能です
+    Default encoding is utf8 for input and output.
+    Supported encodings are below.
 
         cp932 shijtjis eucjp utf8
+        and encodings supported by mahonia
 
-    REGEXは、色づけを行う正規表現
-    COLORは、以下の色の名前を指定可能です
+    REGEX : Regular expression
+
+    COLOR : Color name
 
         None
         Black
