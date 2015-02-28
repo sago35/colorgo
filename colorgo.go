@@ -37,18 +37,23 @@ var ColorMap map[string]ct.Color = map[string]ct.Color{
 	"WHITE":   ct.White,
 }
 
-func makeColorRule(regexStr, color string) ColorRule {
+func makeColorRule(regexStr, color string) (ColorRule, error) {
 	c, ok := ColorMap[strings.ToUpper(color)]
 	if !ok {
 		c = ct.None
 	}
 
-	rule := ColorRule{
-		RegexStr: regexStr,
-		Color:    c,
-		Regex:    regexp.MustCompile(regexStr),
+	re, err := regexp.Compile(regexStr)
+	if err != nil {
+		return ColorRule{}, err
+	} else {
+		rule := ColorRule{
+			RegexStr: regexStr,
+			Color:    c,
+			Regex:    re,
+		}
+		return rule, err
 	}
-	return rule
 }
 
 func main() {
@@ -110,8 +115,14 @@ OTHER:
 	app.Action = func(c *cli.Context) {
 		rules := []ColorRule{}
 		if len(c.Args()) > 0 {
-			for i := 0; i + 1 < len(c.Args()); i += 2 {
-				rules = append(rules, makeColorRule(c.Args()[i], c.Args()[i+1]))
+			for i := 0; i+1 < len(c.Args()); i += 2 {
+				r, err := makeColorRule(c.Args()[i], c.Args()[i+1])
+				if err != nil {
+					fmt.Fprintln(os.Stderr, "regex error:", err)
+					os.Exit(1)
+				} else {
+					rules = append(rules, r)
+				}
 			}
 		}
 
