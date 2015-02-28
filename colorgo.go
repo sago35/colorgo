@@ -26,19 +26,19 @@ func initColorRules(rules []ColorRule) *regexp.Regexp {
 }
 
 var ColorMap map[string]ct.Color = map[string]ct.Color{
-	"None":    ct.None,
-	"Black":   ct.Black,
-	"Red":     ct.Red,
-	"Green":   ct.Green,
-	"Yellow":  ct.Yellow,
-	"Blue":    ct.Blue,
-	"Magenta": ct.Magenta,
-	"Cyan":    ct.Cyan,
-	"White":   ct.White,
+	"NONE":    ct.None,
+	"BLACK":   ct.Black,
+	"RED":     ct.Red,
+	"GREEN":   ct.Green,
+	"YELLOW":  ct.Yellow,
+	"BLUE":    ct.Blue,
+	"MAGENTA": ct.Magenta,
+	"CYAN":    ct.Cyan,
+	"WHITE":   ct.White,
 }
 
 func makeColorRule(regexStr, color string) ColorRule {
-	c, ok := ColorMap[color]
+	c, ok := ColorMap[strings.ToUpper(color)]
 	if !ok {
 		c = ct.None
 	}
