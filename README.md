@@ -7,6 +7,12 @@ colorize stdout by regex
 
 ![](https://raw.githubusercontent.com/wiki/sago35/colorgo/images/demo.png)
 
+Japanese is ok.
+
+    $ subst /? | colorgo -i cp932 "ドライブ|パス" Red
+
+![](https://raw.githubusercontent.com/wiki/sago35/colorgo/images/demo2.png)
+
 ## Usage
 
 ```
