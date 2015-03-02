@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/daviddengcn/go-colortext"
+	"io"
 	"os"
 	"regexp"
 	"strings"
@@ -56,7 +57,7 @@ func makeColorRule(regexStr, color string) (ColorRule, error) {
 	}
 }
 
-func Colorize(c *cli.Context) {
+func Colorize(c *cli.Context, reader io.Reader, writer io.Writer) {
 	rules := []ColorRule{}
 	if len(c.Args()) > 0 {
 		for i := 0; i+1 < len(c.Args()); i += 2 {
@@ -70,7 +71,7 @@ func Colorize(c *cli.Context) {
 		}
 	}
 
-	scanner := bufio.NewScanner(os.Stdin)
+	scanner := bufio.NewScanner(reader)
 	regex := initColorRules(rules)
 
 	for scanner.Scan() {
@@ -78,19 +79,19 @@ func Colorize(c *cli.Context) {
 		fa := regex.FindAllIndex([]byte(line), -1)
 		s := 0
 		for _, x := range fa {
-			fmt.Print(mahonia.NewEncoder(c.String("output")).ConvertString(line[s:x[0]]))
+			fmt.Fprint(writer, mahonia.NewEncoder(c.String("output")).ConvertString(line[s:x[0]]))
 			for _, r := range rules {
 				if r.Regex.MatchString(line[x[0]:x[1]]) {
 					ct.ChangeColor(r.Color, true, ct.None, false)
 					break
 				}
 			}
-			fmt.Print(mahonia.NewEncoder(c.String("output")).ConvertString(line[x[0]:x[1]]))
+			fmt.Fprint(writer, mahonia.NewEncoder(c.String("output")).ConvertString(line[x[0]:x[1]]))
 			ct.ResetColor()
 			s = x[1]
 		}
-		fmt.Print(mahonia.NewEncoder(c.String("output")).ConvertString(line[s:]))
-		fmt.Println()
+		fmt.Fprint(writer, mahonia.NewEncoder(c.String("output")).ConvertString(line[s:]))
+		fmt.Fprintln(writer)
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -157,7 +158,7 @@ OTHER:
 `
 
 	app.Action = func(c *cli.Context) {
-		Colorize(c)
+		Colorize(c, os.Stdin, os.Stdout)
 	}
 
 	app.Run(os.Args)
