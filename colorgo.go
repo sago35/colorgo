@@ -56,6 +56,48 @@ func makeColorRule(regexStr, color string) (ColorRule, error) {
 	}
 }
 
+func Colorize(c *cli.Context) {
+	rules := []ColorRule{}
+	if len(c.Args()) > 0 {
+		for i := 0; i+1 < len(c.Args()); i += 2 {
+			r, err := makeColorRule(c.Args()[i], c.Args()[i+1])
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "regex error:", err)
+				os.Exit(1)
+			} else {
+				rules = append(rules, r)
+			}
+		}
+	}
+
+	scanner := bufio.NewScanner(os.Stdin)
+	regex := initColorRules(rules)
+
+	for scanner.Scan() {
+		line := mahonia.NewDecoder(c.String("input")).ConvertString(scanner.Text())
+		fa := regex.FindAllIndex([]byte(line), -1)
+		s := 0
+		for _, x := range fa {
+			fmt.Print(mahonia.NewEncoder(c.String("output")).ConvertString(line[s:x[0]]))
+			for _, r := range rules {
+				if r.Regex.MatchString(line[x[0]:x[1]]) {
+					ct.ChangeColor(r.Color, true, ct.None, false)
+					break
+				}
+			}
+			fmt.Print(mahonia.NewEncoder(c.String("output")).ConvertString(line[x[0]:x[1]]))
+			ct.ResetColor()
+			s = x[1]
+		}
+		fmt.Print(mahonia.NewEncoder(c.String("output")).ConvertString(line[s:]))
+		fmt.Println()
+	}
+
+	if err := scanner.Err(); err != nil {
+		fmt.Fprintln(os.Stderr, "reading standard input:", err)
+	}
+}
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "gocolor.go"
@@ -115,45 +157,7 @@ OTHER:
 `
 
 	app.Action = func(c *cli.Context) {
-		rules := []ColorRule{}
-		if len(c.Args()) > 0 {
-			for i := 0; i+1 < len(c.Args()); i += 2 {
-				r, err := makeColorRule(c.Args()[i], c.Args()[i+1])
-				if err != nil {
-					fmt.Fprintln(os.Stderr, "regex error:", err)
-					os.Exit(1)
-				} else {
-					rules = append(rules, r)
-				}
-			}
-		}
-
-		scanner := bufio.NewScanner(os.Stdin)
-		regex := initColorRules(rules)
-
-		for scanner.Scan() {
-			line := mahonia.NewDecoder(c.String("input")).ConvertString(scanner.Text())
-			fa := regex.FindAllIndex([]byte(line), -1)
-			s := 0
-			for _, x := range fa {
-				fmt.Print(mahonia.NewEncoder(c.String("output")).ConvertString(line[s:x[0]]))
-				for _, r := range rules {
-					if r.Regex.MatchString(line[x[0]:x[1]]) {
-						ct.ChangeColor(r.Color, true, ct.None, false)
-						break
-					}
-				}
-				fmt.Print(mahonia.NewEncoder(c.String("output")).ConvertString(line[x[0]:x[1]]))
-				ct.ResetColor()
-				s = x[1]
-			}
-			fmt.Print(mahonia.NewEncoder(c.String("output")).ConvertString(line[s:]))
-			fmt.Println()
-		}
-
-		if err := scanner.Err(); err != nil {
-			fmt.Fprintln(os.Stderr, "reading standard input:", err)
-		}
+		Colorize(c)
 	}
 
 	app.Run(os.Args)
