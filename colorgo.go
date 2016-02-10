@@ -2,10 +2,11 @@ package main
 
 import (
 	"bufio"
-	"code.google.com/p/mahonia"
 	"fmt"
 	"github.com/codegangsta/cli"
 	"github.com/daviddengcn/go-colortext"
+	"golang.org/x/text/encoding/japanese"
+	"golang.org/x/text/transform"
 	"io"
 	"os"
 	"regexp"
@@ -71,26 +72,30 @@ func Colorize(c *cli.Context, reader io.Reader, writer io.Writer) {
 		}
 	}
 
+	if c.String("input") == "cp932" {
+		reader = transform.NewReader(reader, japanese.ShiftJIS.NewDecoder())
+	}
+
 	scanner := bufio.NewScanner(reader)
 	regex := initColorRules(rules)
 
 	for scanner.Scan() {
-		line := mahonia.NewDecoder(c.String("input")).ConvertString(scanner.Text())
+		line := scanner.Text()
 		fa := regex.FindAllIndex([]byte(line), -1)
 		s := 0
 		for _, x := range fa {
-			fmt.Fprint(writer, mahonia.NewEncoder(c.String("output")).ConvertString(line[s:x[0]]))
+			fmt.Fprint(writer, line[s:x[0]])
 			for _, r := range rules {
 				if r.Regex.MatchString(line[x[0]:x[1]]) {
 					ct.ChangeColor(r.Color, true, ct.None, false)
 					break
 				}
 			}
-			fmt.Fprint(writer, mahonia.NewEncoder(c.String("output")).ConvertString(line[x[0]:x[1]]))
+			fmt.Fprint(writer, line[x[0]:x[1]])
 			ct.ResetColor()
 			s = x[1]
 		}
-		fmt.Fprint(writer, mahonia.NewEncoder(c.String("output")).ConvertString(line[s:]))
+		fmt.Fprint(writer, line[s:])
 		fmt.Fprintln(writer)
 	}
 
