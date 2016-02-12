@@ -72,8 +72,13 @@ func Colorize(c *cli.Context, reader io.Reader, writer io.Writer) {
 		}
 	}
 
-	if c.String("input") == "cp932" {
+	switch c.String("input") {
+	case "cp932", "shiftjis":
 		reader = transform.NewReader(reader, japanese.ShiftJIS.NewDecoder())
+	case "eucjp":
+		reader = transform.NewReader(reader, japanese.EUCJP.NewDecoder())
+	case "jis", "iso2022jp":
+		reader = transform.NewReader(reader, japanese.ISO2022JP.NewDecoder())
 	}
 
 	scanner := bufio.NewScanner(reader)
