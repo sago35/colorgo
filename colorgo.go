@@ -149,8 +149,7 @@ OTHER:
     Default encoding is utf8 for input and output.
     Supported encodings are below.
 
-        cp932 shijtjis eucjp utf8
-        and encodings supported by mahonia
+        cp932 shiftjis eucjp utf8 jis iso2022jp
 
     REGEX : Regular expression
 
