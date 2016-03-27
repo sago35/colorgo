@@ -112,7 +112,7 @@ func BenchmarkColorize(b *testing.B) {
 	set := flag.NewFlagSet("test", 0)
 	set.String("input", "utf8", "")
 	set.String("output", "utf8", "")
-	c := cli.NewContext(nil, set, set)
+	c := cli.NewContext(nil, set, nil)
 
 	for i := 0; i < b.N; i++ {
 		Colorize(c, stdin, stdout)
