@@ -3,14 +3,15 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"github.com/codegangsta/cli"
-	"github.com/daviddengcn/go-colortext"
-	"golang.org/x/text/encoding/japanese"
-	"golang.org/x/text/transform"
 	"io"
 	"os"
 	"regexp"
 	"strings"
+
+	"github.com/codegangsta/cli"
+	"github.com/daviddengcn/go-colortext"
+	"golang.org/x/text/encoding/japanese"
+	"golang.org/x/text/transform"
 )
 
 type ColorRule struct {

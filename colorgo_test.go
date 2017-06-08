@@ -3,9 +3,10 @@ package main
 import (
 	"bytes"
 	"flag"
+	"testing"
+
 	"github.com/codegangsta/cli"
 	"github.com/daviddengcn/go-colortext"
-	"testing"
 )
 
 func TestMakeColorRule(t *testing.T) {
