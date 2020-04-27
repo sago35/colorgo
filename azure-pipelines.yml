@@ -16,7 +16,8 @@ steps:
     workingDirectory: '$(System.DefaultWorkingDirectory)'
 - task: Go@0
   inputs:
-    command: 'build ./cmd/colorgo'
+    command: 'build'
+    arguments: './cmd/colorgo'
     workingDirectory: '$(System.DefaultWorkingDirectory)'
 - task: CopyFiles@2
   inputs:
