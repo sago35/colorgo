@@ -16,7 +16,7 @@ var (
 	app            = kingpin.New(`colorgo`, `colorize stdout by regular expressions`)
 	inputEncoding  = app.Flag("input", "input encoding").Default("utf8").Short('i').String()
 	outputEncoding = app.Flag("output", "output encoding").Default("utf8").Short('o').String()
-	args           = app.Arg("args", "other args").Strings()
+	args           = app.Arg("args", "other args ('[REGEX]' COLOR)").Strings()
 )
 
 func main() {
